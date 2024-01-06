@@ -1,11 +1,11 @@
-#ifndef __IOFILE__
-#define __IOFILE__
+#ifndef IOFILE_H
+#define IOFILE_H
 #include <stdio.h>
 
 typedef int IOFILE_STATUS;
 
-#ifndef IOFILE_STATUS_CHUNK
-#define IOFILE_STATUS_CHUNK 2097152 /* 2 MB */
+#ifndef IOFILE_READ_CHUNK
+#define IOFILE_READ_CHUNK 2097152 /* 2 MB */
 #endif
 
 #define IOFILE_STATUS_OK 0 /* Success */
@@ -28,7 +28,7 @@ fclose(f);
 */
 IOFILE_STATUS iofile_read_all(FILE* in, char** data, size_t* len);
 
-#endif /* __IOFILE__ */
+#endif /* IOFILE_H */
 
 #ifdef IOFILE_IMPLEMENTATION
 
@@ -41,11 +41,11 @@ IOFILE_STATUS iofile_read_all(FILE* in, char** data, size_t* len);
  */
 int iofile_read_all(FILE* in, char** data, size_t* len)
 {
-    size_t allocated = IOFILE_STATUS_CHUNK;
+    size_t allocated = IOFILE_READ_CHUNK;
     size_t nread_total = 0;
     size_t nread = 0;
 
-    *data = malloc(IOFILE_STATUS_CHUNK);
+    *data = malloc(IOFILE_READ_CHUNK);
     if (data == NULL) {
         return IOFILE_STATUS_NOMEM;
     }
@@ -62,7 +62,7 @@ int iofile_read_all(FILE* in, char** data, size_t* len)
         }
 
         if (nread_total == allocated) {
-            allocated += IOFILE_STATUS_CHUNK;
+            allocated += IOFILE_READ_CHUNK;
             char* new_data = realloc(*data, allocated);
             if (new_data == NULL) {
                 free(*data);
